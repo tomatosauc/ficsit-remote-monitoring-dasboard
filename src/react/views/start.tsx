@@ -95,7 +95,7 @@ export const Start: React.FC = () => {
                     multiple
                     value={tmpItemSelection}
                     options={Object.values(gameResources)
-                      .map((it) => it.name as string)
+                      .map((it) => it.name.replace(/_/g, " ") as string)
                       .sort((a, b) => stringSorterHelper(a, b))}
                   />
 
@@ -172,7 +172,7 @@ export const Start: React.FC = () => {
                   spacing={2}
                 >
                   {worldInv.map((item) => {
-                    if (itemSelection.includes(item.name)) {
+                    if (itemSelection.includes(item.name.replace(/_/g, " "))) {
                       return (
                         <Grid
                           key={item.className}
@@ -199,7 +199,7 @@ export const Start: React.FC = () => {
                                 marginBottom="5px"
                                 textAlign="center"
                               >
-                                {item.name}
+                                {item.name.replace(/_/g, " ")}
                               </Typography>
                               <Typography level="body-md">
                                 {item.amount} Items
