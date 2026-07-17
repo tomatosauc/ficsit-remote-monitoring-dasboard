@@ -17,5 +17,5 @@ export type RecipesDto = {
   Products?: (ItemsEntity | null)[] | null;
   ProducedIn?: (string | null)[] | null;
   ManualDuration: number;
-  FactoryDucation: number; 
+  FactoryDuration: number; 
 };
