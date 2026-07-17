@@ -17,6 +17,9 @@ export const recipesDtoToFmMapper = (dto: RecipesDto[],): RecipesFm[] => {
 			Category: recipesDto.Category,
 			ManualDuration: recipesDto.ManualDuration,
 			FactoryDuration: recipesDto.FactoryDuration,
+			ProducedIn: recipesDto.ProducedIn ? recipesDto.ProducedIn : "Other",
+			Ingredients: recipesDto.Ingredients,
+			Products: recipesDto.Products,
     }
   });
 };

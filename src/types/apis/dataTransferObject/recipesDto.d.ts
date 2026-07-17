@@ -15,7 +15,7 @@ export type RecipesDto = {
   Events?: (string | null)[] | null;
   Ingredients?: (ItemsEntity | null)[] | null;
   Products?: (ItemsEntity | null)[] | null;
-  ProducedIn?: (string | null)[] | null;
+  ProducedIn?: string;
   ManualDuration: number;
   FactoryDuration: number; 
 };

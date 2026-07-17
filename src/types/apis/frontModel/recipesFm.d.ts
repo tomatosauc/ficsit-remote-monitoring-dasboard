@@ -1,13 +1,22 @@
 import type { GameClassNamesEnum } from "../../../enums/gameClassNames.enum";
-import type { RecipeItemFm } from "./recipeItemFm";
+
+type ItemsEntity = {
+  Name: string;
+  ClassName: string;
+  Amount: number;
+  MaxAmount: number;
+  ManualRate: number;
+  FactoryRate: number;
+};
+
 
 export type RecipesFm = {
     Name: string;
     ClassName: GameClassNamesEnum;
     Category: string;
-    Ingredients?: (RecipeItemFm | null)[] | null;
-    Products?: (RecipeItemFm | null)[] | null;
-    ProducedIn?: (string | null)[] | null;
+    Ingredients?: (ItemsEntity | null)[] | null;
+    Products?: (ItemsEntity | null)[] | null;
+    ProducedIn: string;
     ManualDuration: number;
     FactoryDuration: number; 
 }
