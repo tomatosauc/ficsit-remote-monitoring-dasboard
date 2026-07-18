@@ -1,4 +1,7 @@
 export enum GameClassNamesEnum {
+  // Default fallback value
+  Undefined = "Undefined",
+
   // Raw resources items
   Desc_OreIron_C = "Desc_OreIron_C",
   Desc_OreCopper_C = "Desc_OreCopper_C",
