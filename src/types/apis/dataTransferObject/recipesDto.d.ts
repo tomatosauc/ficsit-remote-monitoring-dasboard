@@ -13,9 +13,9 @@ export type RecipesDto = {
   ClassName: string;
   Category: string;
   Events?: (string | null)[] | null;
-  Ingredients?: (ItemsEntity | null)[] | null;
-  Products?: (ItemsEntity | null)[] | null;
-  ProducedIn?: (string | null) | null;
+  Ingredients?: (ItemsEntity | null)[];
+  Products?: (ItemsEntity | null)[];
+  ProducedIn?: (string)[] | null;
   ManualDuration: number;
   FactoryDuration: number; 
 };

@@ -14,9 +14,9 @@ export type RecipesFm = {
     Name: string;
     ClassName: GameClassNamesEnum;
     Category: string;
-    Ingredients?: (ItemsEntity | null)[] | null;
-    Products?: (ItemsEntity | null)[] | null;
-    ProducedIn: string;
+    Ingredients?: (ItemsEntity | null)[];
+    Products?: (ItemsEntity | null)[];
+    ProducedIn: GameClassNamesEnum[];
     ManualDuration: number;
     FactoryDuration: number; 
 }
