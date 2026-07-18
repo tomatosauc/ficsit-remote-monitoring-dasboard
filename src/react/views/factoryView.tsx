@@ -13,7 +13,7 @@ import React from "react";
 import { BsArrowRightShort, BsExclamationTriangleFill } from "react-icons/bs";
 import { redirect, useSearchParams } from "react-router-dom";
 
-import { gameItemsDictionnary } from "../../dictionaries/gameItems.dictionary";
+import { gameItemsDictionary } from "../../dictionaries/gameItems.dictionary";
 import type { GameItemsEnum } from "../../enums/gameItems.enum";
 import { gameItemFilterHelper } from "../../helpers/gameItemFilter.helper";
 import { getImageHelper } from "../../helpers/getImage.helper";
@@ -32,7 +32,7 @@ export const DetailedFactoryView: React.FC = () => {
 
   const factoriesList = objectEntriesToArrayHelper<GameItems>(
     gameItemFilterHelper({
-      gameItemsDictionnary,
+      gameItemsDictionary,
       filter: "factories",
     }),
   );
@@ -53,7 +53,7 @@ export const DetailedFactoryView: React.FC = () => {
     <Container sx={{ paddingTop: "50px" }}>
       <Card
         variant="outlined"
-        sx={{ marginBottom: "30px" }}
+        sx={{ marginBottom: "15px" }}
       >
         <CardContent>
           <Grid
@@ -67,8 +67,49 @@ export const DetailedFactoryView: React.FC = () => {
                 marginBottom="5px"
                 fontWeight={600}
               >
-                {currentFactoryName}
+                {currentFactoryName.replaceAll("_", " ")}
               </Typography>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      <Card
+        variant="outlined"
+        sx={{ marginBottom: "30px" }}>
+        <CardContent>
+          <Grid
+            container
+            display='flex'
+            alignItems="start"
+          >
+            <Typography
+              level="h3"
+              marginBottom="5px"
+              fontWeight={300}
+            >
+              Filters
+            </Typography>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            
+          >
+            <Grid xs={4}>
+              <Card>
+                Ingredient Items
+              </Card>
+            </Grid>
+            <Grid xs={4}>
+              <Card>
+                Product Items
+              </Card>
+            </Grid>
+            <Grid xs={4}>
+              <Card>
+                Recipe
+              </Card>
             </Grid>
           </Grid>
         </CardContent>
