@@ -5,11 +5,30 @@ import { GameClassNamesEnum } from "../enums/gameClassNames.enum";
 
 export const recipesDtoToFmMapper = (dto: RecipesDto[],): RecipesFm[] => {
   return dto.map((recipesDto) => {
-    const ClassName = enumDtoToFmMapper(
-			recipesDto.ClassName,
-			GameClassNamesEnum,
-			"GameClassNamesEnum",
-    );
+		let ClassName = GameClassNamesEnum.Undefined
+		if (recipesDto.ClassName in GameClassNamesEnum) {
+			ClassName = enumDtoToFmMapper(
+				recipesDto.ClassName,
+				GameClassNamesEnum,
+				"GameClassNamesEnum",
+			);
+		}
+
+		let ProducedIn = [GameClassNamesEnum.Undefined,]
+		if (recipesDto.ProducedIn) {
+			ProducedIn = []
+			recipesDto.ProducedIn.map((machine) => {
+				if (machine in GameClassNamesEnum) {
+					ProducedIn.push(enumDtoToFmMapper(
+						machine,
+						GameClassNamesEnum,
+						"GameClassNamesEnum",
+					))
+				} else {
+					ProducedIn.push(GameClassNamesEnum.Undefined)
+				}
+			});
+		}
     
     return {
 			Name: recipesDto.Name,
@@ -17,7 +36,7 @@ export const recipesDtoToFmMapper = (dto: RecipesDto[],): RecipesFm[] => {
 			Category: recipesDto.Category,
 			ManualDuration: recipesDto.ManualDuration,
 			FactoryDuration: recipesDto.FactoryDuration,
-			ProducedIn: recipesDto.ProducedIn ? recipesDto.ProducedIn : "Other",
+			ProducedIn: ProducedIn,
 			Ingredients: recipesDto.Ingredients,
 			Products: recipesDto.Products,
     }
