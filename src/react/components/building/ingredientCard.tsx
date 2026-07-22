@@ -62,7 +62,7 @@ export const IngredientCard: React.FC<Props> = ({ product }) => {
                   {`${
                     isItemSolid
                       ? product.currentUsage.toFixed(2)
-                      : `${Math.round(product.currentUsage / 10) / 100} m³`
+                      : `${product.currentUsage.toFixed(2)} m³`
                   }/min`}
                 </Typography>
               </Grid>
@@ -80,7 +80,7 @@ export const IngredientCard: React.FC<Props> = ({ product }) => {
                   {`${
                     isItemSolid
                       ? product.maxUsage.toFixed(2)
-                      : `${Math.round(product.maxUsage / 10) / 100} m³`
+                      : `${product.maxUsage.toFixed(2)} m³`
                   }/min`}
                 </Typography>
               </Grid>
@@ -114,7 +114,7 @@ export const IngredientCard: React.FC<Props> = ({ product }) => {
               <Grid>
                 {isItemSolid
                   ? product.amount
-                  : `${Math.round(product.amount / 10) / 100} m³`}
+                  : `${product.amount.toFixed(2)} m³`}
               </Grid>
             </Grid>
           </Grid>
