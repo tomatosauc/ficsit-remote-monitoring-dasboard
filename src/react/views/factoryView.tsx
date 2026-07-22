@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-import React from "react";
+import React, { useState } from "react";
 import { BsArrowRightShort, BsExclamationTriangleFill } from "react-icons/bs";
 import { redirect, useSearchParams } from "react-router-dom";
 
@@ -25,6 +25,11 @@ import type { GameItems } from "../../types/gameItems/gameItems";
 import type { GameItemManufacturerBuilding } from "../../types/gameItems/manufacturerBuilding";
 import { IngredientCard } from "../components/building/ingredientCard";
 import { ProductionCard } from "../components/building/productionCard";
+import { FilterButton } from "../components/filterButton";
+import { EndpointEnum } from "../../enums/endpoint.enum";
+import { RecipesDto } from "../../types/apis/dataTransferObject/recipesDto";
+import { RecipesFm } from "../../types/apis/frontModel/recipesFm";
+import { GameClassNamesEnum } from "../../enums/gameClassNames.enum";
 
 export const DetailedFactoryView: React.FC = () => {
   const [params] = useSearchParams();
@@ -48,6 +53,31 @@ export const DetailedFactoryView: React.FC = () => {
     factoryEndpoint,
     !factoryEndpoint,
   );
+
+  let { data: recipes } = useAutoRefetch<RecipesDto[], RecipesFm[]>(
+    EndpointEnum.RECIPE,
+    !EndpointEnum.RECIPE,
+  );
+
+  recipes = recipes ? recipes.filter(
+    (item) => item.ProducedIn[0] && item.ProducedIn[0].name !== "BP_EquipmentDescriptorBuildGun_C" && item.ProducedIn[0].name !== "FGAnyUndefinedDescriptor" && item.ProducedIn[0].name === currentFactoryName 
+  ) : undefined;
+
+  const recipe_list = (recipes 
+    ? recipes.map((recipe) => {return {label: recipe.Name, value: recipe.Name}}) 
+    : [{label: "No recipe", value: GameClassNamesEnum.Undefined}]
+  )
+  const [recipeFilter, writeRecipeFilter] = useState<string[]>([]);
+  const [ingredientfilter, writeIngredientFilter] = useState<string[]>([]);
+
+  const filteredFactories = factories?.filter((factory) => {
+    return (
+      recipeFilter.length>0 
+      ? recipeFilter.includes(factory.recipe) 
+      : true)
+  });
+
+  // console.log(filteredFactories && filteredFactories[0].ingredients)
 
   return (
     <Container sx={{ paddingTop: "50px" }}>
@@ -96,31 +126,31 @@ export const DetailedFactoryView: React.FC = () => {
             spacing={2}
             
           >
-            <Grid xs={4}>
-              <Card>
-                Ingredient Items
-              </Card>
-            </Grid>
+            <FilterButton
+              label="Ingredients"
+              options={[{label:"option1", value:"yay"},{label:"option2", value:"yoy"}]}
+              onChange={writeIngredientFilter}
+            />
             <Grid xs={4}>
               <Card>
                 Product Items
               </Card>
             </Grid>
-            <Grid xs={4}>
-              <Card>
-                Recipe
-              </Card>
-            </Grid>
+            <FilterButton
+              label="Recipes"
+              options={recipe_list}
+              onChange={writeRecipeFilter}
+            />
           </Grid>
         </CardContent>
       </Card>
 
-      {factories ? (
+      {filteredFactories ? (
         <Grid
           container
           spacing={3}
         >
-          {factories.map((factory) => {
+          {filteredFactories.map((factory) => {
             return (
               <Grid
                 xs={4}
