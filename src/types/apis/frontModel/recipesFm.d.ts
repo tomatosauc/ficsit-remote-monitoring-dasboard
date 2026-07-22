@@ -1,3 +1,4 @@
+import { GameItems } from "../../gameItems/gameItems";
 import type { GameClassNamesEnum } from "../../../enums/gameClassNames.enum";
 
 type ItemsEntity = {
@@ -16,7 +17,7 @@ export type RecipesFm = {
     Category: string;
     Ingredients?: (ItemsEntity | null)[];
     Products?: (ItemsEntity | null)[];
-    ProducedIn: GameClassNamesEnum[];
+    ProducedIn: GameItems[];
     ManualDuration: number;
     FactoryDuration: number; 
 }
