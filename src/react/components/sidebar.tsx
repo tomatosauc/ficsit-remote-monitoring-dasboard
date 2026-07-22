@@ -10,6 +10,7 @@ import {
 } from "@mui/joy";
 import React, { type ReactElement, useState } from "react";
 import {
+  BsClipboardData,
   BsGearFill,
   BsGridFill,
   BsLightningFill,
@@ -80,6 +81,12 @@ export const Sidebar: React.FC = () => {
         path: "/awesomeSink",
         label: "Awesome Sink",
         icon: <RiCoupon2Fill />,
+        isDisabled: false,
+      },
+      {
+        path: "/recipes",
+        label: "Unlocked Recipe list",
+        icon: <BsClipboardData />,
         isDisabled: false,
       },
     ],

@@ -1,7 +1,7 @@
 import { Card, CardContent, Grid, Typography } from "@mui/joy";
 import React from "react";
 
-import { gameItemsDictionnary } from "../../../dictionaries/gameItems.dictionary";
+import { gameItemsDictionary } from "../../../dictionaries/gameItems.dictionary";
 import { GameResourcesTypeEnum } from "../../../enums/gameResourcesType.enum";
 import { getImageHelper } from "../../../helpers/getImage.helper";
 import type { RecipeItemFm } from "../../../types/apis/frontModel/recipeItemFm";
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const ProductionCard: React.FC<Props> = ({ product }) => {
-  const item = gameItemsDictionnary[product.className];
+  const item = gameItemsDictionary[product.className];
   const isItemSolid =
     (item as GameItemResource).resourceType === GameResourcesTypeEnum.Solid;
 
@@ -64,7 +64,7 @@ export const ProductionCard: React.FC<Props> = ({ product }) => {
                   {`${
                     isItemSolid
                       ? product.currentUsage.toFixed(2)
-                      : `${Math.round(product.currentUsage / 10) / 100} m³`
+                      : `${product.currentUsage.toFixed(2)} m³`
                   }/min`}
                 </Typography>
               </Grid>
@@ -82,7 +82,7 @@ export const ProductionCard: React.FC<Props> = ({ product }) => {
                   {`${
                     isItemSolid
                       ? product.maxUsage.toFixed(2)
-                      : `${Math.round(product.maxUsage / 10) / 100} m³`
+                      : `${product.maxUsage.toFixed(2)} m³`
                   }/min`}
                 </Typography>
               </Grid>
@@ -122,7 +122,7 @@ export const ProductionCard: React.FC<Props> = ({ product }) => {
                 >
                   {isItemSolid
                     ? product.amount
-                    : `${(Math.round(product.amount / 10) / 100).toFixed(2)} m³`}
+                    : `${(product.amount).toFixed(2)} m³`}
                 </Typography>
               </Grid>
             </Grid>

@@ -9,11 +9,11 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-import React from "react";
+import React, { useState } from "react";
 import { BsArrowRightShort, BsExclamationTriangleFill } from "react-icons/bs";
 import { redirect, useSearchParams } from "react-router-dom";
 
-import { gameItemsDictionnary } from "../../dictionaries/gameItems.dictionary";
+import { gameItemsDictionary } from "../../dictionaries/gameItems.dictionary";
 import type { GameItemsEnum } from "../../enums/gameItems.enum";
 import { gameItemFilterHelper } from "../../helpers/gameItemFilter.helper";
 import { getImageHelper } from "../../helpers/getImage.helper";
@@ -25,6 +25,11 @@ import type { GameItems } from "../../types/gameItems/gameItems";
 import type { GameItemManufacturerBuilding } from "../../types/gameItems/manufacturerBuilding";
 import { IngredientCard } from "../components/building/ingredientCard";
 import { ProductionCard } from "../components/building/productionCard";
+import { FilterButton } from "../components/filterButton";
+import { EndpointEnum } from "../../enums/endpoint.enum";
+import { RecipesDto } from "../../types/apis/dataTransferObject/recipesDto";
+import { RecipesFm } from "../../types/apis/frontModel/recipesFm";
+import { GameClassNamesEnum } from "../../enums/gameClassNames.enum";
 
 export const DetailedFactoryView: React.FC = () => {
   const [params] = useSearchParams();
@@ -32,7 +37,7 @@ export const DetailedFactoryView: React.FC = () => {
 
   const factoriesList = objectEntriesToArrayHelper<GameItems>(
     gameItemFilterHelper({
-      gameItemsDictionnary,
+      gameItemsDictionary,
       filter: "factories",
     }),
   );
@@ -49,11 +54,36 @@ export const DetailedFactoryView: React.FC = () => {
     !factoryEndpoint,
   );
 
+  let { data: recipes } = useAutoRefetch<RecipesDto[], RecipesFm[]>(
+    EndpointEnum.RECIPE,
+    !EndpointEnum.RECIPE,
+  );
+
+  recipes = recipes ? recipes.filter(
+    (item) => item.ProducedIn[0] && item.ProducedIn[0].name !== "BP_EquipmentDescriptorBuildGun_C" && item.ProducedIn[0].name !== "FGAnyUndefinedDescriptor" && item.ProducedIn[0].name === currentFactoryName 
+  ) : undefined;
+
+  const recipe_list = (recipes 
+    ? recipes.map((recipe) => {return {label: recipe.Name, value: recipe.Name}}) 
+    : [{label: "No recipe", value: GameClassNamesEnum.Undefined}]
+  )
+  const [recipeFilter, writeRecipeFilter] = useState<string[]>([]);
+  const [ingredientfilter, writeIngredientFilter] = useState<string[]>([]);
+
+  const filteredFactories = factories?.filter((factory) => {
+    return (
+      recipeFilter.length>0 
+      ? recipeFilter.includes(factory.recipe) 
+      : true)
+  });
+
+  // console.log(filteredFactories && filteredFactories[0].ingredients)
+
   return (
     <Container sx={{ paddingTop: "50px" }}>
       <Card
         variant="outlined"
-        sx={{ marginBottom: "30px" }}
+        sx={{ marginBottom: "15px" }}
       >
         <CardContent>
           <Grid
@@ -67,19 +97,60 @@ export const DetailedFactoryView: React.FC = () => {
                 marginBottom="5px"
                 fontWeight={600}
               >
-                {currentFactoryName}
+                {currentFactoryName.replaceAll("_", " ")}
               </Typography>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
 
-      {factories ? (
+      <Card
+        variant="outlined"
+        sx={{ marginBottom: "30px" }}>
+        <CardContent>
+          <Grid
+            container
+            display='flex'
+            alignItems="start"
+          >
+            <Typography
+              level="h3"
+              marginBottom="5px"
+              fontWeight={300}
+            >
+              Filters
+            </Typography>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            
+          >
+            <FilterButton
+              label="Ingredients"
+              options={[{label:"option1", value:"yay"},{label:"option2", value:"yoy"}]}
+              onChange={writeIngredientFilter}
+            />
+            <Grid xs={4}>
+              <Card>
+                Product Items
+              </Card>
+            </Grid>
+            <FilterButton
+              label="Recipes"
+              options={recipe_list}
+              onChange={writeRecipeFilter}
+            />
+          </Grid>
+        </CardContent>
+      </Card>
+
+      {filteredFactories ? (
         <Grid
           container
           spacing={3}
         >
-          {factories.map((factory) => {
+          {filteredFactories.map((factory) => {
             return (
               <Grid
                 xs={4}
