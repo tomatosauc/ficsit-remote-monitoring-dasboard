@@ -2,6 +2,7 @@ import type { RecipesDto } from "../types/apis/dataTransferObject/recipesDto";
 import type { RecipesFm } from "../types/apis/frontModel/recipesFm"; 
 import { enumDtoToFmMapper } from "./enumDtoToFm.mapper";
 import { GameClassNamesEnum } from "../enums/gameClassNames.enum";
+import { gameItemsDictionary } from "../dictionaries/gameItems.dictionary";
 
 export const recipesDtoToFmMapper = (dto: RecipesDto[],): RecipesFm[] => {
   return dto.map((recipesDto) => {
@@ -14,18 +15,18 @@ export const recipesDtoToFmMapper = (dto: RecipesDto[],): RecipesFm[] => {
 			);
 		}
 
-		let ProducedIn = [GameClassNamesEnum.Undefined,]
+		let ProducedIn = [gameItemsDictionary[GameClassNamesEnum.Undefined],]
 		if (recipesDto.ProducedIn) {
 			ProducedIn = []
 			recipesDto.ProducedIn.map((machine) => {
 				if (machine in GameClassNamesEnum) {
-					ProducedIn.push(enumDtoToFmMapper(
+					ProducedIn.push(gameItemsDictionary[enumDtoToFmMapper(
 						machine,
 						GameClassNamesEnum,
 						"GameClassNamesEnum",
-					))
+					)])
 				} else {
-					ProducedIn.push(GameClassNamesEnum.Undefined)
+					ProducedIn.push(gameItemsDictionary[GameClassNamesEnum.Undefined])
 				}
 			});
 		}
