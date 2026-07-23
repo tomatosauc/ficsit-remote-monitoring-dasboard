@@ -7,7 +7,7 @@ import {
   Grid,
   Skeleton,
   Stack,
-  Typography,
+  Typography
 } from "@mui/joy";
 import React, { useState } from "react";
 import { BsArrowRightShort, BsExclamationTriangleFill } from "react-icons/bs";
@@ -30,6 +30,8 @@ import { EndpointEnum } from "../../enums/endpoint.enum";
 import { RecipesDto } from "../../types/apis/dataTransferObject/recipesDto";
 import { RecipesFm } from "../../types/apis/frontModel/recipesFm";
 import { GameClassNamesEnum } from "../../enums/gameClassNames.enum";
+
+import { JoyPagination } from "../components/pagination";
 
 export const DetailedFactoryView: React.FC = () => {
   const [params] = useSearchParams();
@@ -63,16 +65,58 @@ export const DetailedFactoryView: React.FC = () => {
     (item) => item.ProducedIn[0] && item.ProducedIn[0].name !== "BP_EquipmentDescriptorBuildGun_C" && item.ProducedIn[0].name !== "FGAnyUndefinedDescriptor" && item.ProducedIn[0].name === currentFactoryName 
   ) : undefined;
 
-  const recipe_list = (recipes 
+  const recipeList = (recipes 
     ? recipes.map((recipe) => {return {label: recipe.Name, value: recipe.Name}}) 
     : [{label: "No recipe", value: GameClassNamesEnum.Undefined}]
   )
   const [recipeFilter, writeRecipeFilter] = useState<string[]>([]);
+
+  const ingredientList = [] as {label: string, value: string}[];
+  for (let i = 0; i<(factories ? factories.length : 0); i++) {
+    factories && (factories[i].ingredients.map((ingredient) => {
+      if (!ingredientList.some(e => e.label === ingredient.name)) {
+        ingredientList.push({label: ingredient.name, value: ingredient.name})
+      }
+    }))
+  }
   const [ingredientFilter, writeIngredientFilter] = useState<string[]>([]);
+
+  const productList = [] as {label: string, value: string}[];
+  for (let i = 0; i<(factories ? factories.length : 0); i++) {
+    factories && (factories[i].products.map((product) => {
+      if (!productList.some(e => e.label === product.name)) {
+        productList.push({label: product.name, value: product.name})
+      }
+    }))
+  }
   const [productFilter, writeProductFilter] = useState<string[]>([]);
   const [statusFilter, writeStatusFilter] = useState<boolean[]>([]);
 
-  const [pageNumber, writePageNumber] = useState<number>(0);
+  const [pageNumber, writePageNumber] = useState<number>(1);
+
+  function pageChange(_: any, page: number) {
+    writePageNumber(page);
+  }
+
+  function recipeFilterChange(newState: string[]) {
+    writeRecipeFilter(newState);
+    writePageNumber(1);
+  }
+
+  function ingredientFilterChange(newState: string[]) {
+    writeIngredientFilter(newState);
+    writePageNumber(1);
+  }
+
+  function productFilterChange(newState: string[]) {
+    writeProductFilter(newState);
+    writePageNumber(1);
+  }
+
+  function statusFilterChange(newState: boolean[]) {
+    writeStatusFilter(newState);
+    writePageNumber(1);
+  }
 
   const filteredFactories = factories?.filter((factory) => {
     return (
@@ -84,7 +128,29 @@ export const DetailedFactoryView: React.FC = () => {
       statusFilter.length>0
       ? statusFilter.includes(factory.isProducing)
       : true)
-  }).slice(pageNumber*30, (pageNumber+1)*30);
+  }).filter((factory) => {
+    if (ingredientFilter.length === 0) {
+      return (true)
+    }
+    for (let i = 0; i<factory.ingredients.length; i++) {
+      if (ingredientFilter.includes(factory.ingredients[i].name)) {
+        return (true)
+      }
+    }
+    return (false)
+  }).filter((factory) => {
+    if (productFilter.length === 0) {
+      return (true)
+    }
+    for (let i = 0; i<factory.products.length; i++) {
+      if (productFilter.includes(factory.products[i].name)) {
+        return (true)
+      }
+    }
+    return (false)
+  });
+  
+  const slicedFactories = filteredFactories?.slice((pageNumber-1)*30, (pageNumber)*30);
 
   return (
     <Container sx={{ paddingTop: "50px" }}>
@@ -135,34 +201,37 @@ export const DetailedFactoryView: React.FC = () => {
           >
             <FilterButton
               label="Ingredients"
-              options={[{label:"option1", value:"yay"},{label:"option2", value:"yoy"}]}
-              onChange={writeIngredientFilter}
+              options={ingredientList}
+              onChange={ingredientFilterChange}
             />
             <FilterButton
               label="Products"
-              options={[{label:'test', value:'what'}]}
-              onChange={writeProductFilter}
+              options={productList}
+              onChange={productFilterChange}
             />
             <FilterButton
               label="Recipes"
-              options={recipe_list}
-              onChange={writeRecipeFilter}
+              options={recipeList}
+              onChange={recipeFilterChange}
             />
             <FilterButton
               label="Status"
               options={[{label:'Producing...', value:true}, {label:'Not producing', value:false}]}
-              onChange={writeStatusFilter}
+              onChange={statusFilterChange}
             />
           </Grid>
         </CardContent>
       </Card>
+      <Grid container justifyContent={'center'} marginBottom={3}>
+        <JoyPagination count={filteredFactories ? Math.ceil(filteredFactories.length/30) : 1} siblingCount={3} boundaryCount={2} onChange={pageChange}/>
+      </Grid>
 
-      {filteredFactories ? (
+      {slicedFactories ? (
         <Grid
           container
           spacing={3}
         >
-          {filteredFactories.map((factory) => {
+          {slicedFactories.map((factory) => {
             return (
               <Grid
                 xs={4}
