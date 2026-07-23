@@ -68,16 +68,23 @@ export const DetailedFactoryView: React.FC = () => {
     : [{label: "No recipe", value: GameClassNamesEnum.Undefined}]
   )
   const [recipeFilter, writeRecipeFilter] = useState<string[]>([]);
-  const [ingredientfilter, writeIngredientFilter] = useState<string[]>([]);
+  const [ingredientFilter, writeIngredientFilter] = useState<string[]>([]);
+  const [productFilter, writeProductFilter] = useState<string[]>([]);
+  const [statusFilter, writeStatusFilter] = useState<boolean[]>([]);
+
+  const [pageNumber, writePageNumber] = useState<number>(0);
 
   const filteredFactories = factories?.filter((factory) => {
     return (
       recipeFilter.length>0 
       ? recipeFilter.includes(factory.recipe) 
       : true)
-  });
-
-  // console.log(filteredFactories && filteredFactories[0].ingredients)
+  }).filter((factory) => {
+    return (
+      statusFilter.length>0
+      ? statusFilter.includes(factory.isProducing)
+      : true)
+  }).slice(pageNumber*30, (pageNumber+1)*30);
 
   return (
     <Container sx={{ paddingTop: "50px" }}>
@@ -131,15 +138,20 @@ export const DetailedFactoryView: React.FC = () => {
               options={[{label:"option1", value:"yay"},{label:"option2", value:"yoy"}]}
               onChange={writeIngredientFilter}
             />
-            <Grid xs={4}>
-              <Card>
-                Product Items
-              </Card>
-            </Grid>
+            <FilterButton
+              label="Products"
+              options={[{label:'test', value:'what'}]}
+              onChange={writeProductFilter}
+            />
             <FilterButton
               label="Recipes"
               options={recipe_list}
               onChange={writeRecipeFilter}
+            />
+            <FilterButton
+              label="Status"
+              options={[{label:'Producing...', value:true}, {label:'Not producing', value:false}]}
+              onChange={writeStatusFilter}
             />
           </Grid>
         </CardContent>
