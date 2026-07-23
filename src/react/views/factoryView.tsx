@@ -65,12 +65,30 @@ export const DetailedFactoryView: React.FC = () => {
     (item) => item.ProducedIn[0] && item.ProducedIn[0].name !== "BP_EquipmentDescriptorBuildGun_C" && item.ProducedIn[0].name !== "FGAnyUndefinedDescriptor" && item.ProducedIn[0].name === currentFactoryName 
   ) : undefined;
 
-  const recipe_list = (recipes 
+  const recipeList = (recipes 
     ? recipes.map((recipe) => {return {label: recipe.Name, value: recipe.Name}}) 
     : [{label: "No recipe", value: GameClassNamesEnum.Undefined}]
   )
   const [recipeFilter, writeRecipeFilter] = useState<string[]>([]);
+
+  const ingredientList = [] as {label: string, value: string}[];
+  for (let i = 0; i<(factories ? factories.length : 0); i++) {
+    factories && (factories[i].ingredients.map((ingredient) => {
+      if (!ingredientList.some(e => e.label === ingredient.name)) {
+        ingredientList.push({label: ingredient.name, value: ingredient.name})
+      }
+    }))
+  }
   const [ingredientFilter, writeIngredientFilter] = useState<string[]>([]);
+
+  const productList = [] as {label: string, value: string}[];
+  for (let i = 0; i<(factories ? factories.length : 0); i++) {
+    factories && (factories[i].products.map((product) => {
+      if (!productList.some(e => e.label === product.name)) {
+        productList.push({label: product.name, value: product.name})
+      }
+    }))
+  }
   const [productFilter, writeProductFilter] = useState<string[]>([]);
   const [statusFilter, writeStatusFilter] = useState<boolean[]>([]);
 
@@ -110,6 +128,26 @@ export const DetailedFactoryView: React.FC = () => {
       statusFilter.length>0
       ? statusFilter.includes(factory.isProducing)
       : true)
+  }).filter((factory) => {
+    if (ingredientFilter.length === 0) {
+      return (true)
+    }
+    for (let i = 0; i<factory.ingredients.length; i++) {
+      if (ingredientFilter.includes(factory.ingredients[i].name)) {
+        return (true)
+      }
+    }
+    return (false)
+  }).filter((factory) => {
+    if (productFilter.length === 0) {
+      return (true)
+    }
+    for (let i = 0; i<factory.products.length; i++) {
+      if (productFilter.includes(factory.products[i].name)) {
+        return (true)
+      }
+    }
+    return (false)
   });
   
   const slicedFactories = filteredFactories?.slice((pageNumber-1)*30, (pageNumber)*30);
@@ -163,17 +201,17 @@ export const DetailedFactoryView: React.FC = () => {
           >
             <FilterButton
               label="Ingredients"
-              options={[{label:"option1", value:"yay"},{label:"option2", value:"yoy"}]}
+              options={ingredientList}
               onChange={ingredientFilterChange}
             />
             <FilterButton
               label="Products"
-              options={[{label:'test', value:'what'}]}
+              options={productList}
               onChange={productFilterChange}
             />
             <FilterButton
               label="Recipes"
-              options={recipe_list}
+              options={recipeList}
               onChange={recipeFilterChange}
             />
             <FilterButton
