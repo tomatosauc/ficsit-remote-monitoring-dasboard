@@ -87,7 +87,7 @@ export const FilterButton: React.FC<Props> = ({
             <Grid xs={16}>
               <span style={{wordWrap: "break-word"}}>
                 {selectedOptions.length
-                  ? `${label.slice(0,4)}: ${selectedOptions.join(', ').length > 50 ? selectedOptions.join(', ').slice(0, 50) + "..." : selectedOptions.join(', ')}`
+                  ? `${label.slice(0,5)}: ${selectedOptions.join(', ').length > 50 ? selectedOptions.join(', ').slice(0, 50) + "..." : selectedOptions.join(', ')}`
                   : label}
               </span>
             </Grid>
@@ -159,20 +159,3 @@ export const FilterButton: React.FC<Props> = ({
     </Grid>
   );
 };
-
-    // <Grid xs={4}>
-    //   <Dropdown xs={4}>
-    //     <MenuButton size="lg">
-    //       {label}
-    //     </MenuButton>
-    //     <Menu>
-    //       {filteredOptions.map((option) => {
-    //         return (
-    //           <MenuItem> {option.label} </MenuItem>
-    //         )
-    //       })}
-    //     </Menu>
-    //   </Dropdown>
-    // </Grid>
-
-{/*  */}
